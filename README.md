@@ -55,7 +55,7 @@ Challenges:
 
 ## 3. CloudWatch Agent + SSM based monitoring
 
-![Dashboard](aws_architecture_cross_account_disk_monitoring.png)
+![Architecture](DiskMonitoring-SolutionArchitecture.png)
 
 Approach: In this approach - CloudWatch Agent is installed on every target EC2 via Ansible (one-time deployment using SSM — no SSH needed). Once running, each agent independently collects disk metrics every 60 seconds and pushes them directly to the central monitoring account's CloudWatch using cross-account IAM role assumption. CloudWatch Alarms continuously evaluate these metrics against configured thresholds (75%/90%/95%) and automatically trigger SNS notifications to the ops team when breached. These benefits of no polling, no cron, no human in the loop made me stick to this approach of using CW Agent + SSM based monitoring solution.
 
