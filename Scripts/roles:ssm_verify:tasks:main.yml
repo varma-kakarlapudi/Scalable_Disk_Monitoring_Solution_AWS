@@ -1,0 +1,13 @@
+
+---
+- name: Check SSM agent status
+  ansible.builtin.command: systemctl status amazon-ssm-agent
+  register: ssm_status
+  changed_when: false
+  failed_when: ssm_status.rc != 0
+
+- name: Confirm SSM agent is active
+  ansible.builtin.debug:
+    msg: "SSM agent running on {{ inventory_hostname }}"
+  when: ssm_status.rc == 0
+

@@ -1,0 +1,32 @@
+
+---
+# Account IDs
+monitoring_account_id: "111122223333"
+spoke_account_id: "444455556666"
+
+# Region
+aws_region: "us-east-1"
+
+# CloudWatch
+cw_namespace: "Custom/DiskMonitoring"
+cw_collection_interval: 60
+
+# Alarm thresholds
+alarm_warning_threshold: 75
+alarm_critical_threshold: 90
+alarm_emergency_threshold: 95
+
+# SNS topic names
+sns_warning_topic: "disk-monitoring-warning"
+sns_critical_topic: "disk-monitoring-critical"
+sns_emergency_topic: "disk-monitoring-emergency"
+
+# Monitored paths
+monitored_paths:
+  - "/"
+  - "/var"
+  - "/tmp"
+
+# CW Agent cross-account push role
+cw_push_role_arn: "arn:aws:iam::{{ monitoring_account_id }}:role/CWAgentCrossAccountPush"
+

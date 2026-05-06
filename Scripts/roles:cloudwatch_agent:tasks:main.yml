@@ -1,0 +1,38 @@
+
+---
+- name: Check if CW agent is already installed
+  ansible.builtin.stat:
+    path: /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl
+  register: cw_agent_binary
+
+- name: Install CW agent (Amazon Linux / RHEL)
+  ansible.builtin.yum:
+    name: amazon-cloudwatch-agent
+    state: present
+  when: not cw_agent_binary.stat.exists
+
+- name: Deploy CW agent config
+  ansible.builtin.template:
+    src: cw_agent_config.json.j2
+    dest: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_cw_agent
+
+- name: Start CW agent with config
+  ansible.builtin.command: >
+    /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl
+    -a fetch-config
+    -m ec2
+    -s
+    -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+  changed_when: true
+
+- name: Verify agent is running
+  ansible.builtin.command: >
+    /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a status
+  register: agent_status
+  changed_when: false
+  failed_when: "'running' not in agent_status.stdout"
+

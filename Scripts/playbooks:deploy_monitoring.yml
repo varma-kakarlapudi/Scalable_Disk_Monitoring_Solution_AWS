@@ -1,0 +1,11 @@
+
+---
+- name: Deploy Disk Monitoring - CW Agent
+  hosts: all
+  gather_facts: false
+  become: true
+
+  roles:
+    - ssm_verify
+    - cloudwatch_agent
+
